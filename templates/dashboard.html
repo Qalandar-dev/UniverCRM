@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-container">
+    <!-- HEADER DESKTOP-->
+    {% include 'userbar.html' %}
+    <!-- HEADER DESKTOP-->
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+
+                <!-- TOP STATISTIC CARDS -->
+                <div class="row m-t-25">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="overview-item overview-item--c1">
+                            <div class="overview__inner">
+                                <div class="overview-box clearfix">
+                                    <div class="icon">
+                                        <i class="zmdi zmdi-account-o"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h2>{{ teachers_count|default:0 }}</h2>
+                                        <span>Teachers</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="overview-item overview-item--c2">
+                            <div class="overview__inner">
+                                <div class="overview-box clearfix">
+                                    <div class="icon">
+                                        <i class="zmdi zmdi-accounts-outline"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h2>{{ groups_count|default:0 }}</h2>
+                                        <span>Groups</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="overview-item overview-item--c3">
+                            <div class="overview__inner">
+                                <div class="overview-box clearfix">
+                                    <div class="icon">
+                                        <i class="zmdi zmdi-book"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h2>{{ subjects_count|default:0 }}</h2>
+                                        <span>Subjects</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="overview-item overview-item--c4">
+                            <div class="overview__inner">
+                                <div class="overview-box clearfix">
+                                    <div class="icon">
+                                        <i class="zmdi zmdi-balance"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h2>{{ kafedras_count|default:0 }}</h2>
+                                        <span>Kafedras</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHARTS SECTION -->
+                <div class="row">
+                    <!-- SINGLE BAR CHART -->
+                    <div class="col-lg-6">
+                        <div class="au-card m-b-30">
+                            <div class="au-card-inner">
+                                <h3 class="title-2 m-b-40">Single Bar Chart</h3>
+                                <canvas id="singelBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PIE CHART -->
+                    <div class="col-lg-6">
+                        <div class="au-card m-b-30">
+                            <div class="au-card-inner">
+                                <h3 class="title-2 m-b-40">Pie Chart</h3>
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT-->
+</div>
+
+<!-- Chart.js Kutubxonasi -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // 1. Single Bar Chart (Kafedralar bo'yicha o'qituvchilar soni)
+    const barCtx = document.getElementById('singelBarChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ bar_labels|safe|default:"['Sun', 'Mon', 'Tu', 'Wed', 'Th', 'Fri', 'Sat']" }},
+            datasets: [{
+                label: "O'qituvchilar soni",
+                data: {{ bar_data|safe|default:"[40, 55, 75, 81, 56, 55, 40]" }},
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // 2. Pie Chart (Har bir bo'lim uchun har xil rang va nomlar)
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ pie_labels|safe|default:"['Teachers', 'Groups', 'Subjects', 'Kafedras']" }},
+            datasets: [{
+                data: {{ pie_data|safe|default:"[40, 25, 20, 15]" }},
+                backgroundColor: [
+                    '#007bff', // Ko'k (Teachers)
+                    '#28a745', // Yashil (Groups)
+                    '#ffc107', // Sariq (Subjects)
+                    '#dc3545', // Qizil (Kafedras)
+                    '#17a2b8'  // Havorang (Faculties bo'lsa)
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+{% endblock %}
